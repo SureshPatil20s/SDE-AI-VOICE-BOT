@@ -104,8 +104,29 @@ Streamable wrapper combining session metadata with segment or error data:
 
 ---
 
+## Day 3–4 Deliverables: Provider-Neutral Adapter & Deterministic Fake Transcriber
+
+Defined in:
+- [`src/sde4_stt/adapters/base.py`](src/sde4_stt/adapters/base.py): Abstract base class `BaseTranscriberAdapter`.
+- [`src/sde4_stt/adapters/fake_transcriber.py`](src/sde4_stt/adapters/fake_transcriber.py): Zero-API-key mock transcriber `FakeTranscriber`.
+
+### Key Capabilities:
+- **Provider-Neutral Interface:** Clean separation of concerns with `start_session()`, `process_chunk()`, `finish_session()`, and `transcribe_stream()`.
+- **100% Deterministic:** Repeated runs with the same audio chunks and session ID generate identical events, hashes, word timings, and confidence scores.
+- **Progressive Streaming:** Emits `START` $\to$ `INTERIM` (partial hypotheses) $\to$ `FINAL` (committed segment with word timestamps) $\to$ `COMPLETE`.
+- **Flexible Modes:**
+  - *Scripted Mode:* Provide a `canned_transcript` to test specific test phrases progressively.
+  - *Generative Hash Mode:* Deterministically computes words from chunk SHA-256 digests over a standardized development vocabulary.
+- **Chaos / Error Simulation:** Configurable `fail_at_chunk_index` to test downstream failure recovery with standard `TranscriptError` codes.
+
+---
+
 ## Running the Unit Tests
 
 ```bash
-python -m pytest tests/test_schemas.py -v
+# Run all tests (Schemas + Adapters)
+python -m pytest -v
+
+# Run only adapter tests
+python -m pytest tests/test_adapters.py -v
 ```
