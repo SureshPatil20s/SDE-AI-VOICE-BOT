@@ -121,6 +121,22 @@ Defined in:
 
 ---
 
+## Day 5‑6 Deliverables: Ordered Segment Accumulator
+
+Defined in:
+- [`src/sde4_stt/accumulator.py`](src/sde4_stt/accumulator.py): Collects `FINAL` `TranscriptEvent`s from a stream, tolerates out‑of‑order delivery, and returns an ordered list of `TranscriptSegment`s.
+
+### Key Capabilities
+- **Out‑of‑order tolerance** – sorts segments by `sequence_number`.
+- **Lifecycle awareness** – requires a `START` event and a `COMPLETE` event; raises an error if the stream ends prematurely.
+- **Error propagation** – forwards any `ERROR` events as a `RuntimeError`.
+- **Convenient API** – `SegmentAccumulator().accumulate(events)`.
+
+### Running the accumulator tests
+```bash
+python -m pytest tests/test_accumulator.py -v
+```
+
 ## Running the Unit Tests
 
 ```bash
